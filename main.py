@@ -15,7 +15,7 @@ st.set_page_config(page_title='Bus Timings',
                    initial_sidebar_state='expanded',layout='wide')
 st.sidebar.image("./siemens_logo.png", width = 300)
 with st.sidebar:
-    st.info('''We give an option to the user to select an analyze one among the following datasets at a time - 
+    st.info('''We give an option to the user to select and analyze one among the following datasets at a time - 
             \n * No missing timings (selected by default) \n * Missing start timings \n * Missing end timings''')
     option = st.selectbox(
     'Which dataset do you want to analyze?',
@@ -32,7 +32,7 @@ def compute_wt(df):
     return np.sum(swt_df**2)/(2*np.sum(swt_df))
 
 
-dict_of_keywords = {'No missing timings':'no_missing','Missing start timings':'missing_front','Missing End timings':'missing_end'}
+dict_of_keywords = {'No missing timings':'no_missing','Missing start timings':'missing_front','Missing end timings':'missing_end'}
 
 keyword = dict_of_keywords[option]
 df_nm_sched = pd.read_excel('data.xlsx',sheet_name=f'{keyword}_sched')
