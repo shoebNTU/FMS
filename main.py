@@ -46,6 +46,13 @@ delta = delta.T
 delta.fillna(method="bfill",inplace=True)
 delta.fillna(method="ffill",inplace=True)
 
+nan_iloc = np.where(df_nm_oper.isna()) # find nan locations
+delta_T = delta.copy()
+delta_T = delta.T
+
+for xy in zip(nan_iloc[0],nan_iloc[1]):
+    df_nm_oper.iloc[xy] = df_nm_sched.iloc[xy] + pd.Timedelta(delta_T.iloc[xy], "min") 
+
 swt = np.round(compute_wt(df_nm_sched),2) # scheduled
 awt = np.round(compute_wt(df_nm_oper),2) # operated
 ewt = awt - swt
