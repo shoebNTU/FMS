@@ -56,6 +56,10 @@ for xy in zip(nan_iloc[0],nan_iloc[1]):
 for col in df_nm_oper.columns: #sorting
     df_nm_oper[col] = df_nm_oper[col].sort_values(ignore_index=True).values
 
+# computing delta again after updating df_nm_oper
+delta = (df_nm_oper - df_nm_sched)/ pd.Timedelta(minutes=1)
+delta = delta.T
+
 swt = np.round(compute_wt(df_nm_sched),2) # scheduled
 awt = np.round(compute_wt(df_nm_oper),2) # operated
 ewt = awt - swt
