@@ -54,7 +54,7 @@ for xy in zip(nan_iloc[0],nan_iloc[1]):
     df_nm_oper.iloc[xy] = df_nm_sched.iloc[xy] + pd.Timedelta(delta_T.iloc[xy], "min") 
 
 for col in df_nm_oper.columns: #sorting
-    df_nm_oper[col] = df_nm_oper[col].sort_values(ignore_index=True)
+    df_nm_oper[col] = df_nm_oper[col].sort_values(ignore_index=True).values
 
 swt = np.round(compute_wt(df_nm_sched),2) # scheduled
 awt = np.round(compute_wt(df_nm_oper),2) # operated
