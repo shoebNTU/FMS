@@ -22,7 +22,7 @@ with st.sidebar:
     ('No missing timings', 'Missing start timings', 'Missing end timings'))
 
 st.title('Fleet Management Analytics')
-st.subheader(f'Dataset - {option}')
+st.subheader(f'Dataset - _:blue[{option}]_')
 
 
 def compute_wt(df):
