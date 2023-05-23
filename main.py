@@ -98,7 +98,39 @@ fig.update_layout(paper_bgcolor = "lavender", font = {'color': "darkblue", 'fami
 with col2:
     st.plotly_chart(fig, use_container_width=True)
 
-fig = px.line(delta,markers=True,title='Trip-wise Adherence to schedule',labels={"value": "Delay (in minutes)","index":"Bus stop"}
+text = df_nm_sched.applymap(lambda x: x.strftime('%H:%M')).to_numpy()[::-1,:]
+z = delta.to_numpy().T[::-1,:] 
+# Create heatmap object
+fig = go.Figure(data=go.Heatmap(z=z, text=text,xgap=1,ygap=2, texttemplate="%{text}",colorscale='Reds'
+                               , hovertemplate='Trip=%{y} <br>Bus-stop=%{x} <br>Delay (in minutes)=%{z}<extra></extra>'))
+
+# Define x-axis and y-axis objects
+xaxis = go.layout.XAxis(
+    tickmode='array',
+    tickvals= np.arange(df_nm_sched.shape[1]),
+    ticktext=list(df_nm_sched.columns),
+    title='Bus stop'
+)
+yaxis = go.layout.YAxis(
+    tickmode='array',
+    tickvals=np.arange(df_nm_sched.shape[0]),
+    ticktext=np.arange(df_nm_sched.shape[0])[::-1]+1,
+    title='Trips'
+)
+
+# Set axis labels and title
+fig.update_layout(
+    xaxis=xaxis,
+    yaxis=yaxis,
+    title='Trip-wise Adherence to schedule (Heatmap)'
+)
+# Set the colorscale for the heatmap
+fig.update_traces(colorscale='Reds')
+fig.update_traces(zmin=-5, zmax=40)
+st.plotly_chart(fig, use_container_width=True)
+
+fig = px.line(delta,markers=True,title='Trip-wise Adherence to schedule (Line Chart)',labels={"value": "Delay (in minutes)","index":"Bus stop"}
              ,range_y=[min(-4,delta.min().min()-2),max(delta.max().max()+2,10)],symbol='Trip')
 fig.update_layout(margin={'t': 60,'l':10,'b':10,'r':0},font=dict(size=18))
+
 st.plotly_chart(fig, use_container_width=True)
