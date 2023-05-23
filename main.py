@@ -75,7 +75,7 @@ fig.add_trace(go.Indicator(
     mode = "number+delta",
     value = ewt,
     number = { "suffix": " mins."},
-    delta={'reference': 2.0, 'position': "bottom", 'relative': False, 'increasing': {'color': 'red'},'decreasing': {'color': 'green'}},
+    delta={'reference': 2.0, 'position': "bottom", 'relative': True, 'increasing': {'color': 'red'},'decreasing': {'color': 'green'}},
     title = {"text": "Excess Waiting Time"},
 ))
 
