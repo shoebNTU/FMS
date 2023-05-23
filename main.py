@@ -13,17 +13,9 @@ with open('favicon.png', 'rb') as f:
 st.set_page_config(page_title='Bus Timings',
                    page_icon=favicon, 
                    initial_sidebar_state='expanded',layout='wide')
-st.sidebar.image("./siemens_logo.png", width = 300)
-with st.sidebar:
-    st.info('''We give an option to the user to select and analyze one among the following datasets at a time - 
-            \n * No missing timings (selected by default) \n * Missing start timings \n * Missing end timings''')
-    option = st.selectbox(
-    'Which dataset do you want to analyze?',
-    ('No missing timings', 'Missing start timings', 'Missing end timings'))
-
+st.image("./siemens_logo.png", width = 150)
+option = 'No missing timings'
 st.title('Fleet Management Analytics')
-st.subheader(f'Dataset - _:blue[{option}]_')
-
 
 def compute_wt(df):
     swt_df = df.diff()/pd.Timedelta(minutes=1)
@@ -64,14 +56,26 @@ swt = np.round(compute_wt(df_nm_sched),2) # scheduled
 awt = np.round(compute_wt(df_nm_oper),2) # operated
 ewt = awt - swt
 
-col1, col2 = st.columns(2)
+service_col, col1, col2 = st.columns([1,2,2])
+
+with service_col:
+    fig = go.Figure()
+    fig.add_trace(go.Indicator(
+    mode = "number",
+    value = 900,
+    title = {"text": "Service no."},
+))
+
+    fig.update_layout(paper_bgcolor = "lavender", font = {'color': "darkblue", 'family': "Arial"}, height=200,margin={'t': 0,'l':0,'b':0,'r':0})
+    st.plotly_chart(fig, use_container_width=True)
 
 fig = go.Figure()
 
 fig.add_trace(go.Indicator(
-    mode = "number",
+    mode = "number+delta",
     value = ewt,
     number = { "suffix": " mins."},
+    delta={'reference': 2.0, 'position': "bottom", 'relative': False, 'increasing': {'color': 'red'},'decreasing': {'color': 'green'}},
     title = {"text": "Excess Waiting Time"},
 ))
 
@@ -100,8 +104,9 @@ with col2:
 
 text = df_nm_sched.applymap(lambda x: x.strftime('%H:%M')).to_numpy()[::-1,:]
 z = delta.to_numpy().T[::-1,:] 
+text = text + ' + (' + z.astype(str) + "')"
 # Create heatmap object
-fig = go.Figure(data=go.Heatmap(z=z, text=text,xgap=1,ygap=2, texttemplate="%{text}",colorscale='Reds'
+fig = go.Figure(data=go.Heatmap(z=z, textfont=dict(size=16),text=text,xgap=1,ygap=2, texttemplate="%{text}",colorscale='Reds'
                                , hovertemplate='Trip=%{y} <br>Bus-stop=%{x} <br>Delay (in minutes)=%{z}<extra></extra>'))
 
 # Define x-axis and y-axis objects
@@ -109,28 +114,30 @@ xaxis = go.layout.XAxis(
     tickmode='array',
     tickvals= np.arange(df_nm_sched.shape[1]),
     ticktext=list(df_nm_sched.columns),
-    title='Bus stop'
+    title='Bus stop',
+    tickfont=dict(size=18)
 )
 yaxis = go.layout.YAxis(
     tickmode='array',
     tickvals=np.arange(df_nm_sched.shape[0]),
     ticktext=np.arange(df_nm_sched.shape[0])[::-1]+1,
-    title='Trips'
+    title='Trips',
+    tickfont=dict(size=18)
 )
 
 # Set axis labels and title
 fig.update_layout(
     xaxis=xaxis,
     yaxis=yaxis,
-    title='Trip-wise Adherence to schedule (Heatmap)'
+    title='Trip-wise Adherence to schedule (Heatmap)'   
 )
 # Set the colorscale for the heatmap
 fig.update_traces(colorscale='Reds')
 fig.update_traces(zmin=-5, zmax=40)
+fig.update_layout(xaxis_title_font=dict(size=20), yaxis_title_font=dict(size=20))
 st.plotly_chart(fig, use_container_width=True)
 
 fig = px.line(delta,markers=True,title='Trip-wise Adherence to schedule (Line Chart)',labels={"value": "Delay (in minutes)","index":"Bus stop"}
              ,range_y=[min(-4,delta.min().min()-2),max(delta.max().max()+2,10)],symbol='Trip')
-fig.update_layout(margin={'t': 60,'l':10,'b':10,'r':0},font=dict(size=18))
-
+fig.update_layout(margin={'t': 60,'l':10,'b':10,'r':0},xaxis_title_font=dict(size=20), yaxis_title_font=dict(size=20), xaxis=dict(tickfont=dict(size=18)), yaxis=dict(tickfont=dict(size=18)))
 st.plotly_chart(fig, use_container_width=True)
