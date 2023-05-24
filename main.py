@@ -163,7 +163,10 @@ yaxis = go.layout.YAxis(
 fig.update_layout(
     xaxis=xaxis,
     yaxis=yaxis,
-    title='Trip-wise Adherence to schedule (Heatmap)'   
+    title='Trip-wise Adherence to schedule (Heatmap)',
+    hoverlabel=dict(
+        font_size=16,
+    )     
 )
 # Set the colorscale for the heatmap
 # fig.update_traces(colorscale='Reds')
