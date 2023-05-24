@@ -130,8 +130,18 @@ text = df_nm_sched.applymap(lambda x: x.strftime('%H:%M')).to_numpy()[::-1,:]
 z = delta.to_numpy().T[::-1,:] 
 text = text + ' + (' + z.astype(str) + "')"
 # Create heatmap object
-fig = go.Figure(data=go.Heatmap(z=z, textfont=dict(size=16),text=text,xgap=1,ygap=2, texttemplate="%{text}",colorscale='Reds'
-                               , hovertemplate='Trip=%{y} <br>Bus-stop=%{x} <br>Delay (in minutes)=%{z}<extra></extra>'))
+# Set the minimum and maximum values
+zmin = delta.min().min()
+zmax = delta.max().max()
+zrange = zmax - zmin
+
+green_1 = (-2-zmin)/zrange # -2
+green_2 =  (5-zmin)/zrange # 5
+# Define the colorscale
+colorscale = [[0, 'red'],[green_1-0.0001,'red'] ,[green_1, 'green'], [green_2,'green'],[green_2+0.0001,'red'],[1,'red']]
+# Create heatmap object
+fig = go.Figure(data=go.Heatmap(z=z, textfont=dict(size=16),text=text,xgap=1,ygap=2, texttemplate="%{text}",colorscale=colorscale
+                               ,hovertemplate='Trip=%{y} <br>Bus-stop=%{x} <br>Delay (in minutes)=%{z}<extra></extra>'))
 
 # Define x-axis and y-axis objects
 xaxis = go.layout.XAxis(
@@ -156,8 +166,8 @@ fig.update_layout(
     title='Trip-wise Adherence to schedule (Heatmap)'   
 )
 # Set the colorscale for the heatmap
-fig.update_traces(colorscale='Reds')
-fig.update_traces(zmin=-5, zmax=40)
+# fig.update_traces(colorscale='Reds')
+fig.update_traces(zmin=zmin, zmax=zmax)
 fig.update_layout(xaxis_title_font=dict(size=20), yaxis_title_font=dict(size=20))
 st.plotly_chart(fig, use_container_width=True)
 
