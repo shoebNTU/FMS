@@ -56,7 +56,7 @@ swt = np.round(compute_wt(df_nm_sched),2) # scheduled
 awt = np.round(compute_wt(df_nm_oper),2) # operated
 ewt = awt - swt
 
-service_col, col1, col2 = st.columns([1,2,2])
+service_col, service_pkg, operator, col1, col2 = st.columns([1,1,1,2,2])
 
 with service_col:
     fig = go.Figure()
@@ -69,18 +69,42 @@ with service_col:
     fig.update_layout(paper_bgcolor = "lavender", font = {'color': "darkblue", 'family': "Arial"}, height=200,margin={'t': 0,'l':0,'b':0,'r':0})
     st.plotly_chart(fig, use_container_width=True)
 
-fig = go.Figure()
 
-fig.add_trace(go.Indicator(
-    mode = "number+delta",
-    value = ewt,
-    number = { "suffix": " mins."},
-    delta={'reference': 2.0, 'position': "bottom", 'relative': True, 'increasing': {'color': 'red'},'decreasing': {'color': 'green'}},
-    title = {"text": "Excess Waiting Time"},
+with service_pkg:
+    fig = go.Figure()
+    fig.add_trace(go.Indicator(
+    mode = "number",
+    value=6,
+    number = { "prefix": "PT-21"},
+    title = {"text": "Service package"},
 ))
 
-fig.update_layout(paper_bgcolor = "lavender", font = {'color': "darkblue", 'family': "Arial"}, height=200,margin={'t': 0,'l':0,'b':0,'r':0})
+    fig.update_layout(paper_bgcolor = "lavender", font = {'color': "darkblue", 'family': "Arial"}, height=200,margin={'t': 0,'l':0,'b':0,'r':0})
+    st.plotly_chart(fig, use_container_width=True)
+
+with operator:
+    fig = go.Figure()
+    fig.add_trace(go.Indicator(
+    mode = "number",
+    value = 1,
+    title = {"text": "Operator"},
+))
+
+    fig.update_layout(paper_bgcolor = "lavender", font = {'color': "darkblue", 'family': "Arial"}, height=200,margin={'t': 0,'l':0,'b':0,'r':0})
+    st.plotly_chart(fig, use_container_width=True)
+
+
 with col1:
+    fig = go.Figure()
+
+    fig.add_trace(go.Indicator(
+        mode = "number+delta",
+        value = ewt,
+        number = { "suffix": " mins."},
+        delta={'reference': 2.0, 'position': "bottom", 'relative': True, 'increasing': {'color': 'red'},'decreasing': {'color': 'green'}},
+        title = {"text": "Excess Waiting Time"},
+    ))
+    fig.update_layout(paper_bgcolor = "lavender", font = {'color': "darkblue", 'family': "Arial"}, height=200,margin={'t': 0,'l':0,'b':0,'r':0})
     st.plotly_chart(fig, use_container_width=True)
 
 OTA = (1-((delta>5) | (delta<-2)).sum().sum()/delta.size)*100
