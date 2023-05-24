@@ -85,13 +85,22 @@ with service_pkg:
 with operator:
     fig = go.Figure()
     fig.add_trace(go.Indicator(
-    mode = "number",
-    value = 0,
-    number = { "prefix":'SMRT'},
+    mode = "gauge",
+    gauge = {'axis':{'visible':False},
+             'bar': {'color': "darkblue"},'borderwidth': 0},
     title = {"text": "Operator"}
 ))
-
     fig.update_layout(paper_bgcolor = "lavender", font = {'color': "darkblue", 'family': "Arial"}, height=200,margin={'t': 0,'l':0,'b':0,'r':0})
+    
+    fig.add_annotation(dict(font=dict(color='darkblue',size=40),
+                                        x=0.5,
+                                        y=0.5,
+                                        showarrow=False,
+                                        text="SMRT",
+                                        textangle=0,
+                                        xanchor='center',
+                                        xref="paper",
+                                        yref="paper"))
     st.plotly_chart(fig, use_container_width=True)
 
 
