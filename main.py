@@ -75,8 +75,8 @@ with service_pkg:
     fig.add_trace(go.Indicator(
     mode = "number",
     value=6,
-    number = { "prefix": "PT-21"},
-    title = {"text": "Service package"},
+    number = { "prefix": "PT-21","suffix":'<br> (Woodlands)'},
+    title = {"text": "Route package"},
 ))
 
     fig.update_layout(paper_bgcolor = "lavender", font = {'color': "darkblue", 'family': "Arial"}, height=200,margin={'t': 0,'l':0,'b':0,'r':0})
@@ -86,8 +86,9 @@ with operator:
     fig = go.Figure()
     fig.add_trace(go.Indicator(
     mode = "number",
-    value = 1,
-    title = {"text": "Operator"},
+    value = 0,
+    number = { "prefix":'SMRT'},
+    title = {"text": "Operator"}
 ))
 
     fig.update_layout(paper_bgcolor = "lavender", font = {'color': "darkblue", 'family': "Arial"}, height=200,margin={'t': 0,'l':0,'b':0,'r':0})
